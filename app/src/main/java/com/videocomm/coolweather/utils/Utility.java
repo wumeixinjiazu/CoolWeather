@@ -2,10 +2,12 @@ package com.videocomm.coolweather.utils;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.videocomm.coolweather.db.City;
 import com.videocomm.coolweather.db.County;
 import com.videocomm.coolweather.db.Province;
+import com.videocomm.coolweather.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +39,7 @@ public class Utility {
 
                     province.save();
                 }
-                    return true;
+                return true;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -66,7 +68,7 @@ public class Utility {
 
                     city.save();
                 }
-                    return true;
+                return true;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -95,11 +97,29 @@ public class Utility {
 
                     county.save();
                 }
-                    return true;
+                return true;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         return false;
+    }
+
+    /**
+     * 将返回的jso解析成Weather实体类
+     *
+     * @param response
+     * @return
+     */
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
